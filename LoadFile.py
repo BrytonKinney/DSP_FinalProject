@@ -6,6 +6,7 @@ import librosa
 import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.signal as sc
 
 class FinalProject(QWidget):
     def __init__(self):
@@ -19,8 +20,8 @@ class FinalProject(QWidget):
 
         self.le = QLineEdit(self)
         self.le.move(20, 22)
-        self.le.setGeometry(20, 22, 205, 22)
-        self.setGeometry(300, 300, 350, 120)
+        self.le.setGeometry(20, 22, 250, 22)
+        self.setGeometry(300, 300, 370, 100)
         self.setWindowTitle('Input dialog')
         self.show()
 
@@ -28,6 +29,10 @@ class FinalProject(QWidget):
         try:
             y, sr = librosa.load(filename)
             print(y)
+            signalLength = y.shape[0]
+            t, dt = np.linspace(0, 1, y.shape[0], endpoint=False, retstep=True)
+            print(t)
+            print(dt)
             plt.figure()
             plt.subplot(2, 1, 1)
             plt.ylabel('Amplitude')
@@ -35,12 +40,15 @@ class FinalProject(QWidget):
             plt.title('Waveform')
             librosa.display.waveplot(y, sr=sr)
             plt.subplot(2, 1, 2)
-            plt.ylabel('Amplitude')
-            plt.xlabel('Time')
+            plt.ylabel('|Amplitude|')
+            plt.xlabel('Frequency (Hz)')
             plt.title('FFT')
-           # D = librosa.amplitude_to_db(librosa.stft(y), ref=np.max)
-           # librosa.display.specshow(D, sr=sr, y_axis='linear')
-            librosa.display.specshow(np.fft.fftfreq(y), sr=sr)
+            w = np.fft.rfft(y)
+            freq = np.fft.fftfreq(len(w))
+            plt.xscale('log')
+            plt.plot(abs(w))
+            print(w)
+            print(freq)
             plt.show()
         except Exception as valErr:
             print(valErr.args)
