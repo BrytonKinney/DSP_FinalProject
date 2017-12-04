@@ -30,25 +30,47 @@ class FinalProject(QWidget):
             y, sr = librosa.load(filename)
             print(y)
             signalLength = y.shape[0]
-            t, dt = np.linspace(0, 1, y.shape[0], endpoint=False, retstep=True)
-            print(t)
-            print(dt)
             plt.figure()
-            plt.subplot(2, 1, 1)
+            plt.subplot(2, 2, 1)
             plt.ylabel('Amplitude')
             plt.xlabel('Time')
             plt.title('Waveform')
             librosa.display.waveplot(y, sr=sr)
-            plt.subplot(2, 1, 2)
+            plt.subplot(2, 2, 2)
             plt.ylabel('|Amplitude|')
             plt.xlabel('Frequency (Hz)')
-            plt.title('FFT')
-            w = np.fft.rfft(y)
-            freq = np.fft.fftfreq(len(w))
-            plt.xscale('log')
-            plt.plot(abs(w))
-            print(w)
-            print(freq)
+            print(signalLength)
+            n = len(y)
+            k = np.arange(n)
+            T = n/sr
+            frq = k/T
+            print(n)
+            print(n/2)
+            print(range(int(n/2)))
+            frq = frq[range(int(n/2))]
+            Y = np.fft.fft(y)/n
+            Y = Y[range(int(n/2))]
+            plt.plot(frq, np.abs(Y))
+            plt.xlabel('Frequency (Hz)')
+            plt.xlim(auto=True)
+            plt.ylabel('|Amplitude|')
+            plt.subplot(2, 2, 3)
+            plt.xlabel('Frequency (Hz)')
+            plt.ylabel('Phase Angle')
+            plt.plot(frq, np.angle(Y))
+            #t = np.linspace(0, 2*np.pi)
+            #dt = t[1] - t[0]
+            #fa = 1.0/dt
+            #plt.subplot(2, 1, 2)
+            #Y = np.fft.fft(y)
+            #N = int(np.round(len(Y)/2)) + 1
+            #print(N)
+            #Y[N-4:N+3]
+            #X = np.linspace(0, fa/2, N, endpoint=True)
+            #X[:4]
+            #hann = np.hanning(signalLength)
+            #Yhann = np.fft.fft(y*hann)
+            #plt.plot(X, 2.0*np.abs(Yhann[:N])/N)
             plt.show()
         except Exception as valErr:
             print(valErr.args)
